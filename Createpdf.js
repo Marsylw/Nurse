@@ -109,4 +109,5 @@ document.body.removeChild(link);
 
 // Limpa a memória
 URL.revokeObjectURL(url);
+  //oba
 }
