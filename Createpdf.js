@@ -92,5 +92,21 @@ function gerarPDFInscricao(nome, curso, telefone, email) {
   doc.text('Nurse Assistência Domiciliar · Luanda, Angola', 105, 277, { align: 'center' });
   doc.text('Data de inscrição: ' + hoje, 105, 283, { align: 'center' });
 
-  doc.save('Comprovativo_Inscricao_' + nome.replace(/ /g, '_') + '.pdf');
+  //vamos substituir por outro método 
+  //doc.save(`Certificado_${nome}.pdf`);
+  
+  // Cria um "blob" (o arquivo) e uma URL temporária
+const pdfBlob = doc.output('blob');
+const url = URL.createObjectURL(pdfBlob);
+
+// Cria um link invisível e clica nele para forçar o download
+const link = document.createElement('a');
+link.href = url;
+link.download = `Certificado_${nome}.pdf`;
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+
+// Limpa a memória
+URL.revokeObjectURL(url);
 }
