@@ -490,8 +490,8 @@
           <input id="campo-nome" type="text" placeholder="Nome completo" required>
           <input id="campo-telefone" type="tel" placeholder="Telefone (ex: +244 9XX XXX XXX)" required>
           <input id="campo-email" type="email" placeholder="Email (opcional)">
-
-          <select id="campo-curso">
+          <input id="campo-senha" type="password" placeholder="Criar palavra-passe *" required>
+          <select id="campo-curso" required>
             <option value="" disabled selected>Seleccionar curso de interesse</option>
             <optgroup label="3 dias">
               <option value="SBV + DEA">SBV + DEA</option>
@@ -525,7 +525,7 @@
             </optgroup>
           </select>
 
-          <select id="campo-pagamento">
+          <select id="campo-pagamento" required>
             <option value="" disabled selected>Forma de pagamento preferida</option>
             <option value="multicaixa">Multicaixa</option>
             <option value="express_pay">Express Pay</option>
@@ -547,7 +547,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">NURSE</div>
-  <p style="color:var(--muted);font-size:0.72rem;letter-spacing:0.1em;margin-bottom:0.75rem;">ASSISTÊNCIA DOMICILIAR</p>
+  <p style="color:var(--muted);font-size:0.72rem;letter-spacing:0.1em;margin-bottom:0.75rem;">Formação em Saúde</p>
   <div class="footer-links">
     <a href="#cursos">Cursos</a>
     <a href="#como-funciona">Como Funciona</a>
@@ -573,17 +573,21 @@
     const feedback = document.getElementById('form-feedback');
     const btn      = document.getElementById('btn-enviar');
 
-    // Ler campos
     const nome      = document.getElementById('campo-nome').value.trim();
     const telefone  = document.getElementById('campo-telefone').value.trim();
     const email     = document.getElementById('campo-email').value.trim();
+    const senha     = document.getElementById('campo-senha').value.trim();
     const curso     = document.getElementById('campo-curso').value;
     const pagamento = document.getElementById('campo-pagamento').value;
     const mensagem  = document.getElementById('campo-mensagem').value.trim();
 
-    // Validação básica
-    if (!nome || !telefone || !curso) {
-      mostrarFeedback('Por favor preenche o nome, telefone e curso.', 'erro');
+    if (!nome || !telefone || !curso || !senha || !pagamento) {
+      mostrarFeedback('Por favor preenche todos os campos obrigatórios (*).', 'erro');
+      return;
+    }
+
+    if (senha.length < 6) {
+      mostrarFeedback('A palavra-passe deve ter pelo menos 6 caracteres.', 'erro');
       return;
     }
 
@@ -592,14 +596,15 @@
     btn.textContent = 'A enviar…';
 
     const { error } = await db.from('inscricoes').insert({
-      nome,
-      telefone,
-      email:     email     || null,
-      curso,
-      pagamento: pagamento || null,
-      mensagem:  mensagem  || null,
-      estado:    'pendente'
-    });
+  nome,
+  telefone,
+  email: email || null,
+  curso,
+  pagamento,
+  senha,
+  mensagem: mensagem || null,
+  estado: 'pendente'
+});
 
     if (error) {
       console.error('Supabase erro:', error);
