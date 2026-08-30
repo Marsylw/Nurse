@@ -50,6 +50,29 @@
     max-width: 100px;
     mix-blend-mode: screen;
   }
+
+
+.nav-prNurse {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.1; 
+}
+
+
+.nav-prNurse span:first-child {
+    font-weight: bold;
+    font-size: 1.5rem; 
+    color: #f5a623; 
+    letter-spacing: 1px;
+}
+
+
+.nav-prNurse span:last-child {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #8fa8bf; 
+}
   .nav-logo span { color: var(--white); font-weight: 400; font-size: 0.75rem; display: block; letter-spacing: 0.12em; color: var(--muted); }
    .nav-links { display: flex; gap: 2rem; list-style: none; }
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color .2s; }
