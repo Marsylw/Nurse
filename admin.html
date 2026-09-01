@@ -33,16 +33,16 @@
                 </tr>
             </thead>
             <tbody id="tabela-inscricoes">
-                <!-- Os dados aparecerão aqui -->
+                
             </tbody>
         </table>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // COLE A SUA URL E ANON KEY AQUI (as mesmas do index.html)
-        const SUPABASE_URL = 'COLE_SUA_URL';
-        const SUPABASE_ANON_KEY = 'COLE_SUA_ANON_KEY';
+         
+        const SUPABASE_URL = uzitnphltzblfccmiecf.supabase.co ;
+        const SUPABASE_ANON_KEY =sb_publishable_8_3FrRYH5JSpdpi9sSv9Wg_T2ST8IGW ;
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // 1. Fazer Login
@@ -63,7 +63,7 @@
             }
         }
 
-        // 2. Sair
+        
         async function fazerLogout() {
             await supabase.auth.signOut();
             location.reload();
