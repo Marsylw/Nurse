@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Nurse</title>
+    
+</head>
+<body>
+
+    <div id="login-section" class="login-box">
+        <h1>Painel Admin</h1>
+        <input type="email" id="email" placeholder="Email de Admin">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="fazerLogin()">Entrar</button>
+        <div id="error-msg"></div>
+    </div>
+
+    <div id="admin-section" class="hidden">
+        <button id="logout-btn" onclick="fazerLogout()">Sair</button>
+        <h1>Inscrições Recebidas</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                    <th>Curso</th>
+                    <th>Pagamento</th>
+                    <th>Mensagem</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-inscricoes">
+                <!-- Os dados aparecerão aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // COLE A SUA URL E ANON KEY AQUI (as mesmas do index.html)
+        const SUPABASE_URL = 'COLE_SUA_URL';
+        const SUPABASE_ANON_KEY = 'COLE_SUA_ANON_KEY';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 1. Fazer Login
+        async function fazerLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+            
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                errorMsg.innerText = "Email ou senha incorretos!";
+            } else {
+                errorMsg.innerText = "";
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                carregarDados();
+            }
+        }
+
+        // 2. Sair
+        async function fazerLogout() {
+            await supabase.auth.signOut();
+            location.reload();
+        }
+
+        // 3. Carregar e mostrar os dados da tabela
+        async function carregarDados() {
+            const { data: inscricoes, error } = await supabase
+                .from('inscricoes')
+                .select('*')
+                .order('criado_em', { ascending: false });
+
+            if (error) {
+                alert("Erro ao carregar: " + error.message);
+                return;
+            }
+
+            const tabela = document.getElementById('tabela-inscricoes');
+            tabela.innerHTML = '';
+            
+            inscricoes.forEach(item => {
+                const linha = document.createElement('tr');
+                linha.innerHTML = `
+                    <td>${item.nome}</td>
+                    <td>${item.telefone}</td>
+                    <td>${item.email || '-'}</td>
+                    <td>${item.curso}</td>
+                    <td>${item.pagamento}</td>
+                    <td>${item.mensagem || '-'}</td>
+                    <td>${new Date(item.criado_em).toLocaleDateString('pt-PT')}</td>
+                `;
+                tabela.appendChild(linha);
+            });
+        }
+    </script>
+</body>
+</html>
