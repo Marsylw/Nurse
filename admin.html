@@ -42,8 +42,8 @@
     <script>
          
         const SUPABASE_URL = 'https://uzitnphltzblfccmiecf.supabase.co' ;
-        const SUPABASE_ANON_KEY = 'sb_publishable_8_3FrRYH5JSpdpi9sSv9Wg_T2ST8IGW' ;
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6aXRucGhsdHpibGZjY21pZWNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0Njc3MDksImV4cCI6MjEwMjA0MzcwOX0.CaZrcgP93HROuyqfv8akBBGPRLgKMWGLOl2pO7pm2YQ';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // 1. Fazer Login
         async function fazerLogin() {
