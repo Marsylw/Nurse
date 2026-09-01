@@ -43,7 +43,7 @@
          
         const SUPABASE_URL = 'https://uzitnphltzblfccmiecf.supabase.co' ;
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6aXRucGhsdHpibGZjY21pZWNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0Njc3MDksImV4cCI6MjEwMjA0MzcwOX0.CaZrcgP93HROuyqfv8akBBGPRLgKMWGLOl2pO7pm2YQ';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const dbAdmin = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // 1. Fazer Login
         async function fazerLogin() {
@@ -51,7 +51,7 @@
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-msg');
             
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await dbAdmin.auth.signInWithPassword({ email, password });
 
             if (error) {
                 errorMsg.innerText = "Email ou senha incorretos!";
@@ -65,13 +65,13 @@
 
         
         async function fazerLogout() {
-            await supabase.auth.signOut();
+            await dbAdmin.auth.signOut();
             location.reload();
         }
 
         // 3. Carregar e mostrar os dados da tabela
         async function carregarDados() {
-            const { data: inscricoes, error } = await supabase
+            const { data: inscricoes, error } = await dbAdmin
                 .from('inscricoes')
                 .select('*')
                 .order('criado_em', { ascending: false });
