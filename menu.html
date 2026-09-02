@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Área do Aluno – Nurse</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0d1b2a; --navy2: #16293d; --blue: #1e6fc8;
+    --green: #2cb84c; --orange: #f5a623; --white: #fff;
+    --muted: #8fa8bf; --card: #1a2e42; --border: rgba(255,255,255,0.07);
+  }
+  body { font-family: 'Barlow', sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    background: rgba(13,27,42,0.97); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%; height: 64px; position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--orange); }
+  .nav-logo span { color: var(--muted); font-weight: 400; font-size: 0.7rem; display: block; letter-spacing: 0.1em; }
+  .nav-user { display: flex; align-items: center; gap: 1rem; }
+  .nav-user span { color: var(--muted); font-size: 0.85rem; }
+  .btn-logout {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 0.4rem 1rem; border-radius: 4px;
+    font-size: 0.8rem; cursor: pointer; transition: all .2s;
+  }
+  .btn-logout:hover { border-color: #f87171; color: #f87171; }
+
+  /* LOGIN */
+  .login-wrap {
+    display: flex; align-items: center; justify-content: center;
+    min-height: calc(100vh - 64px); padding: 2rem;
+  }
+  .login-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 380px;
+    text-align: center;
+  }
+  .login-box h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.25rem; }
+  .login-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.75rem; }
+  .login-box input {
+    width: 100%; background: var(--navy); border: 1px solid var(--border);
+    color: var(--white); border-radius: 6px; padding: 0.75rem 1rem;
+    font-family: 'Barlow', sans-serif; font-size: 0.9rem;
+    outline: none; margin-bottom: 0.75rem; transition: border-color .2s;
+  }
+  .login-box input:focus { border-color: var(--orange); }
+  .btn-login {
+    width: 100%; background: var(--orange); color: var(--navy);
+    border: none; padding: 0.75rem; border-radius: 6px;
+    font-weight: 800; font-size: 1rem; cursor: pointer;
+    font-family: 'Barlow', sans-serif; transition: opacity .2s;
+  }
+  .btn-login:hover { opacity: 0.85; }
+  .login-error { color: #f87171; font-size: 0.82rem; margin-top: 0.75rem; }
+
+  /* DASHBOARD */
+  .dashboard { max-width: 900px; margin: 0 auto; padding: 2.5rem 5%; }
+
+  .welcome-bar {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 8px 8px 0;
+    padding: 1.25rem 1.5rem; margin-bottom: 2rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .welcome-bar h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; }
+  .welcome-bar h2 span { color: var(--orange); }
+  .welcome-bar p { color: var(--muted); font-size: 0.85rem; }
+
+  /* MENU CARDS */
+  .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .menu-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem; cursor: pointer;
+    transition: border-color .2s, transform .2s; text-align: center;
+  }
+  .menu-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+  .menu-card.active { border-color: var(--orange); }
+  .menu-card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .menu-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .menu-card p { color: var(--muted); font-size: 0.8rem; }
+
+  /* SECTIONS */
+  .section-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.75rem; display: none;
+  }
+  .section-panel.active { display: block; }
+  .section-panel h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.4rem; font-weight: 800; margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);
+  }
+  .section-panel h3 em { color: var(--orange); font-style: normal; }
+
+  /* ENROLLMENT DETAILS */
+  .detail-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.75rem 0; border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-label { color: var(--muted); }
+  .detail-value { font-weight: 600; text-align: right; }
+
+  /* PAYMENT STATUS */
+  .status-badge {
+    display: inline-block; padding: 0.3rem 0.9rem; border-radius: 20px;
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em;
+  }
+  .status-pendente { background: rgba(245,166,35,0.15); color: var(--orange); border: 1px solid rgba(245,166,35,0.3); }
+  .status-pago     { background: rgba(44,184,76,0.15);  color: var(--green);  border: 1px solid rgba(44,184,76,0.3); }
+  .status-cancelado{ background: rgba(220,50,50,0.15);  color: #f87171;       border: 1px solid rgba(220,50,50,0.3); }
+
+  .payment-info {
+    background: rgba(245,166,35,0.07); border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 8px; padding: 1rem 1.25rem; margin-top: 1.25rem;
+    font-size: 0.85rem; color: var(--muted); line-height: 1.7;
+  }
+  .payment-info strong { color: var(--white); }
+
+  /* MATERIALS */
+  .material-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.85rem 0; border-bottom: 1px solid var(--border);
+  }
+  .material-item:last-child { border-bottom: none; }
+  .material-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .material-title { font-weight: 600; font-size: 0.9rem; }
+  .material-sub { color: var(--muted); font-size: 0.78rem; }
+  .material-action {
+    margin-left: auto; background: var(--blue); color: var(--white);
+    border: none; padding: 0.35rem 0.85rem; border-radius: 4px;
+    font-size: 0.78rem; font-weight: 700; cursor: pointer;
+    text-decoration: none; transition: opacity .2s; flex-shrink: 0;
+  }
+  .material-action:hover { opacity: 0.8; }
+  .material-locked { margin-left: auto; color: var(--muted); font-size: 0.75rem; }
+
+  .empty-state { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">NURSE <span>ASSISTÊNCIA DOMICILIAR</span></div>
+  <div class="nav-user">
+    <span id="nav-email"></span>
+    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+  </div>
+</nav>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-section">
+  <div class="login-box">
+    <h2>Área do <span style="color:var(--orange)">Aluno</span></h2>
+    <p>Entra com o email e palavra-passe que usaste na inscrição</p>
+    <input type="email" id="campo-login-email" placeholder="Email">
+    <input type="password" id="campo-login-senha" placeholder="Palavra-passe">
+    <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="login-erro"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard hidden" id="dashboard-section">
+
+  <div class="welcome-bar">
+    <div>
+      <h2>Olá, <span id="aluno-nome">Aluno</span> 👋</h2>
+      <p>Bem-vindo(a) à tua área pessoal</p>
+    </div>
+  </div>
+
+  <!-- MENU -->
+  <div class="menu-grid">
+    <div class="menu-card active" onclick="mostrarSecao('inscricao')">
+      <div class="menu-card-icon">📋</div>
+      <h3>Inscrição</h3>
+      <p>Os teus dados de inscrição</p>
+    </div>
+    <div class="menu-card" onclick="mostrarSecao('pagamento')">
+      <div class="menu-card-icon">💳</div>
+      <h3>Pagamento</h3>
+      <p>Estado e instruções de pagamento</p>
+    </div>
+    <div class="menu-card" onclick="mostrarSecao('materiais')">
+      <div class="menu-card-icon">📚</div>
+      <h3>Materiais</h3>
+      <p>Ficheiros, vídeos e aulas</p>
+    </div>
+  </div>
+
+  <!-- INSCRIÇÃO -->
+  <div class="section-panel active" id="panel-inscricao">
+    <h3>Detalhes da <em>Inscrição</em></h3>
+    <div class="detail-row">
+      <span class="detail-label">Nome</span>
+      <span class="detail-value" id="d-nome">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Email</span>
+      <span class="detail-value" id="d-email">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Telefone</span>
+      <span class="detail-value" id="d-telefone">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Curso</span>
+      <span class="detail-value" id="d-curso">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Data de inscrição</span>
+      <span class="detail-value" id="d-data">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Estado</span>
+      <span class="detail-value" id="d-estado">—</span>
+    </div>
+  </div>
+
+  <!-- PAGAMENTO -->
+  <div class="section-panel" id="panel-pagamento">
+    <h3>Estado do <em>Pagamento</em></h3>
+    <div class="detail-row">
+      <span class="detail-label">Estado actual</span>
+      <span class="detail-value" id="p-estado">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Forma de pagamento</span>
+      <span class="detail-value" id="p-metodo">—</span>
+    </div>
+    <div class="payment-info">
+      <strong>Como efectuar o pagamento:</strong><br>
+      Multicaixa / Express Pay → Referência enviada por contacto<br>
+      Transferência Bancária → Dados enviados após confirmação<br><br>
+      Após o pagamento, o teu estado será actualizado em até 24h.
+      Em caso de dúvida contacta-nos directamente.
+    </div>
+  </div>
+
+  <!-- MATERIAIS -->
+  <div class="section-panel" id="panel-materiais">
+    <h3>Materiais do <em>Curso</em></h3>
+    <div id="materiais-lista">
+      <div class="material-item">
+        <span class="material-icon">📄</span>
+        <div>
+          <div class="material-title">Manual do Curso</div>
+          <div class="material-sub">PDF · Material de apoio digital</div>
+        </div>
+        <span class="material-locked">🔒 Disponível após confirmação de pagamento</span>
+      </div>
+      <div class="material-item">
+        <span class="material-icon">🎬</span>
+        <div>
+          <div class="material-title">Aulas em Vídeo</div>
+          <div class="material-sub">Vídeos gravados das sessões</div>
+        </div>
+        <span class="material-locked">🔒 Disponível após confirmação de pagamento</span>
+      </div>
+      <div class="material-item">
+        <span class="material-icon">📡</span>
+        <div>
+          <div class="material-title">Aula ao Vivo</div>
+          <div class="material-sub">Link para a próxima sessão online</div>
+        </div>
+        <span class="material-locked">🔒 Disponível após confirmação de pagamento</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /dashboard -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://uzitnphltzblfccmiecf.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6aXRucGhsdHpibGZjY21pZWNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0Njc3MDksImV4cCI6MjEwMjA0MzcwOX0.CaZrcgP93HROuyqfv8akBBGPRLgKMWGLOl2pO7pm2YQ';
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ── LOGIN ──
+  async function fazerLogin() {
+    const email = document.getElementById('campo-login-email').value.trim();
+    const senha = document.getElementById('campo-login-senha').value.trim();
+    const erro  = document.getElementById('login-erro');
+
+    if (!email || !senha) {
+      erro.textContent = 'Preenche o email e a palavra-passe.';
+      return;
+    }
+
+    // Buscar inscrição pelo email + senha
+    const { data, error } = await db
+      .from('inscricoes')
+      .select('*')
+      .eq('email', email)
+      .eq('senha', senha)
+      .single();
+
+    if (error || !data) {
+      erro.textContent = 'Email ou palavra-passe incorrectos.';
+      return;
+    }
+
+    // Guardar sessão simples
+    sessionStorage.setItem('aluno', JSON.stringify(data));
+    mostrarDashboard(data);
+  }
+
+  // ── DASHBOARD ──
+  function mostrarDashboard(aluno) {
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('dashboard-section').classList.remove('hidden');
+    document.getElementById('nav-email').textContent = aluno.email || aluno.nome;
+    document.getElementById('aluno-nome').textContent = aluno.nome.split(' ')[0];
+
+    // Preencher inscrição
+    document.getElementById('d-nome').textContent     = aluno.nome;
+    document.getElementById('d-email').textContent    = aluno.email || '—';
+    document.getElementById('d-telefone').textContent = aluno.telefone;
+    document.getElementById('d-curso').textContent    = aluno.curso;
+    document.getElementById('d-data').textContent     = new Date(aluno.criado_em).toLocaleDateString('pt-PT');
+    document.getElementById('d-estado').innerHTML     = badgeEstado(aluno.estado);
+
+    // Preencher pagamento
+    document.getElementById('p-estado').innerHTML  = badgeEstado(aluno.estado);
+    document.getElementById('p-metodo').textContent = aluno.pagamento || '—';
+  }
+
+  function badgeEstado(estado) {
+    const map = {
+      pendente:  ['pendente',  'Pendente'],
+      pago:      ['pago',      'Pago ✓'],
+      cancelado: ['cancelado', 'Cancelado'],
+    };
+    const [cls, label] = map[estado] || ['pendente', estado];
+    return `<span class="status-badge status-${cls}">${label}</span>`;
+  }
+
+  // ── MENU ──
+  function mostrarSecao(secao) {
+    document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.menu-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('panel-' + secao).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  // ── LOGOUT ──
+  function fazerLogout() {
+    sessionStorage.removeItem('aluno');
+    document.getElementById('dashboard-section').classList.add('hidden');
+    document.getElementById('login-section').classList.remove('hidden');
+    document.getElementById('login-erro').textContent = '';
+    document.getElementById('campo-login-email').value = '';
+    document.getElementById('campo-login-senha').value = '';
+  }
+
+  // ── AUTO LOGIN se sessão existir ──
+  const sessao = sessionStorage.getItem('aluno');
+  if (sessao) mostrarDashboard(JSON.parse(sessao));
+</script>
+</body>
+</html>
