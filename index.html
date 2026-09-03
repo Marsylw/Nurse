@@ -553,6 +553,7 @@
   <div class="footer-links">
     <a href="#cursos">Cursos</a>
     <a href="#como-funciona">Como Funciona</a>
+      <a href="menu.html" class="btn-outline" style="padding:0.4rem 1rem;font-size:0.85rem; border: none;">Área do Aluno</a>
     <a href="#contacto">Contacto</a>
   </div>
   <p>© 2025 Nurse Formação em Saúde · Luanda, Angola · Todos os direitos reservados</p>
@@ -672,8 +673,23 @@
     </div>
     <div style="height:1px;background:rgba(255,255,255,0.07);margin-bottom:1.25rem;"></div>
     <div style="color:#8fa8bf;font-size:0.78rem;margin-bottom:1.5rem;">Entraremos em contacto brevemente para confirmar os detalhes.</div>
-    <button onclick="fecharPopup()" style="background:#f5a623;color:#0d1b2a;border:none;padding:0.75rem 2rem;border-radius:6px;font-weight:800;font-size:1rem;cursor:pointer;width:100%;">Fechar</button>
-  </div>
+    <div style="display:flex; gap:0.75rem;">
+  <button onclick="fecharPopup()" style="
+    flex:1; background:transparent; color:var(--muted);
+    border:1px solid var(--border); padding:0.75rem;
+    border-radius:6px; font-weight:700; font-size:0.9rem;
+    cursor:pointer; font-family:'Barlow',sans-serif;
+  ">Fechar</button>
+
+  <a href="menu.html" style="
+    flex:1; background:#f5a623; color:#0d1b2a;
+    border:none; padding:0.75rem;
+    border-radius:6px; font-weight:800; font-size:0.9rem;
+    cursor:pointer; font-family:'Barlow',sans-serif;
+    text-decoration:none; text-align:center; display:flex;
+    align-items:center; justify-content:center;
+  ">Aceder à minha área →</a>
+</div>  </div>
 </div>
 
 <script>
