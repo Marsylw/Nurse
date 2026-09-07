@@ -155,7 +155,11 @@
   <div class="nav-logo">NURSE <span>FORMAÇÂO EM SAÚDE</span></div>
   <div class="nav-user">
     <span id="nav-email"></span>
+    <div class="nav-user">
+    <a href="index.html" style="color:var(--muted);font-size:0.82rem;text-decoration:none;">← Voltar ao site</a>
+    <span id="nav-email"></span>
     <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+</div>
   </div>
 </nav>
 
@@ -165,7 +169,13 @@
     <h2>Área do <span style="color:var(--orange)">Aluno</span></h2>
     <p>Entra com o email e palavra-passe que usaste na inscrição</p>
     <input type="email" id="campo-login-email" placeholder="Email">
-    <input type="password" id="campo-login-senha" placeholder="Palavra-passe">
+    <div style="position:relative;">
+  <input type="password" id="campo-login-senha" placeholder="Palavra-passe" style="padding-right:3rem;">
+  <button onclick="toggleSenha()" type="button" style="
+    position:absolute; right:0.75rem; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer; font-size:1rem; color:var(--muted);
+  " id="btn-toggle-senha">👁</button>
+</div>
     <button class="btn-login" onclick="fazerLogin()">Entrar</button>
     <div class="login-error" id="login-erro"></div>
   </div>
@@ -288,8 +298,7 @@
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6aXRucGhsdHpibGZjY21pZWNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0Njc3MDksImV4cCI6MjEwMjA0MzcwOX0.CaZrcgP93HROuyqfv8akBBGPRLgKMWGLOl2pO7pm2YQ';
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // ── LOGIN ──
-  async function fazerLogin() {
+async function fazerLogin() {
     const email = document.getElementById('campo-login-email').value.trim();
     const senha = document.getElementById('campo-login-senha').value.trim();
     const erro  = document.getElementById('login-erro');
@@ -299,23 +308,50 @@
       return;
     }
 
-    // Buscar inscrição pelo email + senha
+    // Verificar se email existe
+    const { data: emailCheck } = await db
+      .from('inscricoes')
+      .select('id')
+      .eq('email', email)
+      .limit(1);
+
+    if (!emailCheck || emailCheck.length === 0) {
+      erro.textContent = 'Email não encontrado. Verifica se te inscreveste com este email.';
+      return;
+    }
+
+    // Verificar email + senha
     const { data, error } = await db
       .from('inscricoes')
       .select('*')
       .eq('email', email)
       .eq('senha', senha)
-      .single();
+      .limit(1);
 
-    if (error || !data) {
-      erro.textContent = 'Email ou palavra-passe incorrectos.';
+    if (error || !data || data.length === 0) {
+      erro.textContent = 'Palavra-passe incorrecta.';
       return;
     }
 
-    // Guardar sessão simples
-    sessionStorage.setItem('aluno', JSON.stringify(data));
-    mostrarDashboard(data);
+    sessionStorage.setItem('aluno', JSON.stringify(data[0]));
+    mostrarDashboard(data[0]);
   }
+
+
+function toggleSenha() {
+    const campo = document.getElementById('campo-login-senha');
+    const btn   = document.getElementById('btn-toggle-senha');
+    if (campo.type === 'password') {
+      campo.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      campo.type = 'password';
+      btn.textContent = '👁';
+    }
+}
+
+
+ 
 
   // ── DASHBOARD ──
   function mostrarDashboard(aluno) {
@@ -324,17 +360,44 @@
     document.getElementById('nav-email').textContent = aluno.email || aluno.nome;
     document.getElementById('aluno-nome').textContent = aluno.nome.split(' ')[0];
 
-    // Preencher inscrição
     document.getElementById('d-nome').textContent     = aluno.nome;
     document.getElementById('d-email').textContent    = aluno.email || '—';
     document.getElementById('d-telefone').textContent = aluno.telefone;
     document.getElementById('d-curso').textContent    = aluno.curso;
     document.getElementById('d-data').textContent     = new Date(aluno.criado_em).toLocaleDateString('pt-PT');
     document.getElementById('d-estado').innerHTML     = badgeEstado(aluno.estado);
+    document.getElementById('p-estado').innerHTML     = badgeEstado(aluno.estado);
+    document.getElementById('p-metodo').textContent   = aluno.pagamento || '—';
 
-    // Preencher pagamento
-    document.getElementById('p-estado').innerHTML  = badgeEstado(aluno.estado);
-    document.getElementById('p-metodo').textContent = aluno.pagamento || '—';
+    // Desbloquear materiais se pago
+    if (aluno.estado === 'pago') {
+      document.getElementById('materiais-lista').innerHTML = `
+        <div class="material-item">
+          <span class="material-icon">📄</span>
+          <div>
+            <div class="material-title">Manual do Curso</div>
+            <div class="material-sub">PDF · Material de apoio digital</div>
+          </div>
+          <a href="#" class="material-action">Abrir</a>
+        </div>
+        <div class="material-item">
+          <span class="material-icon">🎬</span>
+          <div>
+            <div class="material-title">Aulas em Vídeo</div>
+            <div class="material-sub">Vídeos gravados das sessões</div>
+          </div>
+          <a href="#" class="material-action">Ver</a>
+        </div>
+        <div class="material-item">
+          <span class="material-icon">📡</span>
+          <div>
+            <div class="material-title">Aula ao Vivo</div>
+            <div class="material-sub">Link para a próxima sessão online</div>
+          </div>
+          <a href="#" class="material-action">Entrar</a>
+        </div>
+      `;
+    }
   }
 
   function badgeEstado(estado) {
@@ -346,13 +409,11 @@
     const [cls, label] = map[estado] || ['pendente', estado];
     return `<span class="status-badge status-${cls}">${label}</span>`;
   }
-
-  // ── MENU ──
-  function mostrarSecao(secao) {
+function mostrarSecao(secao, el) {
     document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.menu-card').forEach(c => c.classList.remove('active'));
     document.getElementById('panel-' + secao).classList.add('active');
-    event.currentTarget.classList.add('active');
+    el.classList.add('active');
   }
 
   // ── LOGOUT ──
