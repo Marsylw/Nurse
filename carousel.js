@@ -41,7 +41,7 @@ function initCarousel() {
       <div class="section-title">A nossa <em>Galeria</em></div>
       <div class="section-sub">Momentos de formação e aprendizagem</div>
       <div id="dc-root" style="
-        position:relative; width:100%; height:500px;
+        position:relative; width:100%; height:200px;
         perspective:${CONFIG.perspective}px;
         perspective-origin:50% 50%;
         display:flex; align-items:center; justify-content:center;
