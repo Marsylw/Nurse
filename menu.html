@@ -20,7 +20,7 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 5%; height: 64px; position: sticky; top: 0; z-index: 100;
   }
-  .nav-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--orange); }
+  .nav-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--orange); text-decoration: none; color: #f5a623; }
   .nav-logo span { color: var(--muted); font-weight: 400; font-size: 0.7rem; display: block; letter-spacing: 0.1em; }
   .nav-user { display: flex; align-items: center; gap: 1rem; }
   .nav-user span { color: var(--muted); font-size: 0.85rem; }
@@ -154,11 +154,11 @@
 <nav>
   <div class="nav-logo"><a href="index.html">NURSE </a><span>FORMAÇÂO EM SAÚDE</span></div>
   <div class="nav-user">
-    <span id="nav-email"></span>
+    <span id="nav-email" style="display: none"></span>
     <div class="nav-user">
     <!--<a href="index.html" style="color:var(--muted);font-size:0.82rem;text-decoration:none;">← Voltar ao site</a>-->
    <!-- <span id="nav-email"></span>-->
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    <button class="btn-logout" onclick="fazerLogout()" style="display: none>Sair</button>
 </div>
   </div>
 </nav>
@@ -359,7 +359,8 @@ function toggleSenha() {
     document.getElementById('dashboard-section').classList.remove('hidden');
     document.getElementById('nav-email').textContent = aluno.email || aluno.nome;
     document.getElementById('aluno-nome').textContent = aluno.nome.split(' ')[0];
-
+   document.getElementById('btn-sair').style.display = 'inline-block';
+   
     document.getElementById('d-nome').textContent     = aluno.nome;
     document.getElementById('d-email').textContent    = aluno.email || '—';
     document.getElementById('d-telefone').textContent = aluno.telefone;
@@ -424,6 +425,7 @@ function mostrarSecao(secao, el) {
     document.getElementById('login-erro').textContent = '';
     document.getElementById('campo-login-email').value = '';
     document.getElementById('campo-login-senha').value = '';
+   document.getElementById('btn-sair').style.display = 'none';
   }
 
   // ── AUTO LOGIN se sessão existir ──
